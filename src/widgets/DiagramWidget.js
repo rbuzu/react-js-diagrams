@@ -597,6 +597,7 @@ export class DiagramWidget extends React.Component {
       <div
         ref='canvas'
         className='react-js-diagrams-canvas'
+        style={this.props.style}
         onWheel={this.onWheel.bind(this)}
         onMouseMove={this.onMouseMove.bind(this)}
         onMouseDown={this.onMouseDown.bind(this)}
