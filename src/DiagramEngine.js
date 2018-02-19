@@ -1,7 +1,7 @@
-import _ from 'lodash';
-import { NodeModel, PointModel, LinkModel } from './Common';
-import { BaseEntity } from './BaseEntity';
-import { DiagramModel } from './DiagramModel';
+import _ from "lodash";
+import { NodeModel, PointModel, LinkModel } from "./Common";
+import { BaseEntity } from "./BaseEntity";
+import { DiagramModel } from "./DiagramModel";
 
 /**
  * Passed as a parameter to the DiagramWidget
@@ -106,7 +106,9 @@ export class DiagramEngine extends BaseEntity {
     if (this.nodeFactories[node.getType()]) {
       return this.nodeFactories[node.getType()];
     }
-    console.log(`Cannot find widget factory for node of type: [${node.getType()}]`); // eslint-disable-line
+    console.log(
+      `Cannot find widget factory for node of type: [${node.getType()}]`
+    ); // eslint-disable-line
     return null;
   }
 
@@ -114,7 +116,9 @@ export class DiagramEngine extends BaseEntity {
     if (this.linkFactories[link.getType()]) {
       return this.linkFactories[link.getType()];
     }
-    console.log(`Cannot find widget factory for link of type: [${link.getType()}]`); // eslint-disable-line
+    console.log(
+      `Cannot find widget factory for link of type: [${link.getType()}]`
+    ); // eslint-disable-line
     return null;
   }
 
@@ -137,8 +141,12 @@ export class DiagramEngine extends BaseEntity {
   getRelativeMousePoint(event) {
     const point = this.getRelativePoint(event.pageX, event.pageY);
     return {
-      x: (point.x / (this.diagramModel.getZoomLevel() / 100.0)) - this.diagramModel.getOffsetX(),
-      y: (point.y / (this.diagramModel.getZoomLevel() / 100.0)) - this.diagramModel.getOffsetY()
+      x:
+        point.x / (this.diagramModel.getZoomLevel() / 100.0) -
+        this.diagramModel.getOffsetX(),
+      y:
+        point.y / (this.diagramModel.getZoomLevel() / 100.0) -
+        this.diagramModel.getOffsetY()
     };
   }
 
@@ -149,21 +157,41 @@ export class DiagramEngine extends BaseEntity {
 
   getNodePortElement(port) {
     const selector = this.canvas.querySelector(
-      `.port[data-name="${port.getName()}"][data-nodeid="${port.getParent().getID()}"]`
+      `.port[data-name="${port.getName()}"][data-nodeid="${port
+        .getParent()
+        .getID()}"]`
     );
     if (selector === null) {
-      throw `Cannot find Node Port element with nodeID: [${port.getParent().getID()}] and name: [${port.getName()}]`;
+      throw `Cannot find Node Port element with nodeID: [${port
+        .getParent()
+        .getID()}] and name: [${port.getName()}]`;
     }
     return selector;
+  }
+
+  zoomToFit() {
+    const xFactor = this.canvas.clientWidth / this.canvas.scrollWidth;
+    const yFactor = this.canvas.clientHeight / this.canvas.scrollHeight;
+    const zoomFactor = xFactor < yFactor ? xFactor : yFactor;
+
+    this.diagramModel.setZoomLevel(
+      this.diagramModel.getZoomLevel() * zoomFactor
+    );
+    this.diagramModel.setOffset(0, 0);
+    this.forceUpdate();
   }
 
   getPortCenter(port) {
     const sourceElement = this.getNodePortElement(port);
     const sourceRect = sourceElement.getBoundingClientRect();
-    const rel = this.getRelativePoint(sourceRect.left,sourceRect.top);
-    const x = (sourceElement.offsetWidth / 2) + rel.x / (this.diagramModel.getZoomLevel() / 100.0) -
+    const rel = this.getRelativePoint(sourceRect.left, sourceRect.top);
+    const x =
+      sourceElement.offsetWidth / 2 +
+      rel.x / (this.diagramModel.getZoomLevel() / 100.0) -
       this.diagramModel.getOffsetX();
-    const y = (sourceElement.offsetHeight / 2) + rel.y / (this.diagramModel.getZoomLevel() / 100.0) -
+    const y =
+      sourceElement.offsetHeight / 2 +
+      rel.y / (this.diagramModel.getZoomLevel() / 100.0) -
       this.diagramModel.getOffsetY();
 
     return {
