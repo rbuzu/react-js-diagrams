@@ -566,8 +566,8 @@ export class DiagramWidget extends React.Component {
     }
 
     const style = {
-      width: Math.abs(action.mouseX2 - action.mouseX),
-      height: Math.abs(action.mouseY2 - action.mouseY),
+      width: this.props.width ? this.props.width : Math.abs(action.mouseX2 - action.mouseX),
+      height: this.props.height ? this.props.height :  Math.abs(action.mouseY2 - action.mouseY),
     };
 
     if ((action.mouseX2 - action.mouseX) < 0) {
