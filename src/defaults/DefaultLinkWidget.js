@@ -94,13 +94,6 @@ export class DefaultLinkWidget extends React.Component {
     let pointLeft = points[0];
     let pointRight = points[1];
 
-    // Some defensive programming to make sure the smoothing is
-    // Always in the right direction
-    if (pointLeft.x > pointRight.x) {
-      pointLeft = points[1];
-      pointRight = points[0];
-    }
-
     paths.push(this.generateLink({
       id: 0,
       onMouseDown: (event) => {
