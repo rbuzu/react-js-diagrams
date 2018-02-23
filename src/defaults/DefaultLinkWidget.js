@@ -97,7 +97,7 @@ export class DefaultLinkWidget extends React.Component {
     paths.push(this.generateLink({
       id: 0,
       onMouseDown: (event) => {
-        if (!event.shiftKey) {
+        if (!event.shiftKey && link.canCreatePoints) {
           var point = new PointModel(link, diagramEngine.getRelativeMousePoint(event));
           point.setSelected(true);
           this.forceUpdate();
@@ -145,7 +145,7 @@ export class DefaultLinkWidget extends React.Component {
       'data-linkid': link.id,
       'data-point': index,
       onMouseDown: event => {
-        if (!event.shiftKey) {
+        if (!event.shiftKey && link.canCreatePoints) {
           const point = new PointModel(link, diagramEngine.getRelativeMousePoint(event));
           point.setSelected(true);
           this.forceUpdate();
