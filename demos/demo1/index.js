@@ -44,7 +44,8 @@ class Demo1 extends React.Component {
   linkNodes(port1, port2) {
     const link = new RJD.LinkModel();
   	link.setSourcePort(port1);
-  	link.setTargetPort(port2);
+    link.setTargetPort(port2);
+    link.canCreatePoints = false;
   	return link;
   }
 
@@ -105,7 +106,7 @@ class Demo1 extends React.Component {
   	engine.setDiagramModel(model);
 
     // Render the canvas
-  	return <RJD.DiagramWidget diagramEngine={engine} />;
+  	return <RJD.DiagramWidget actions={{ moveItems: false }} diagramEngine={engine} />;
   }
 }
 
