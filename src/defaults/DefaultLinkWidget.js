@@ -58,7 +58,6 @@ export class DefaultLinkWidget extends React.Component {
   findPathAndRelativePositionToRenderLabel = () => {
 		// an array to hold all path lengths, making sure we hit the DOM only once to fetch this information
 		const lengths = this.refPaths.map(path => path.getTotalLength());
-    console.log(lengths);
 		// calculate the point where we want to display the label
 		let labelPosition = lengths.reduce((previousValue, currentValue) => previousValue + currentValue, 0) / 2;
 
@@ -92,8 +91,6 @@ export class DefaultLinkWidget extends React.Component {
     };
     
     const pathCentre = path.getPointAtLength(position);
-    console.log("PATH CENTRe");
-    console.log(pathCentre);
 		const labelCoordinates = {
 			x: pathCentre.x,
 			y: pathCentre.y
