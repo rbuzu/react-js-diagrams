@@ -21,7 +21,7 @@ class Demo3 extends React.Component {
     this.engine.registerNodeFactory(new RJD.DefaultNodeFactory());
   	this.engine.registerLinkFactory(new RJD.DefaultLinkFactory());
   	this.engine.registerNodeFactory(new DiamondWidgetFactory());
-
+    this.flag = true;
   	// Setup the diagram model
   	this.model = new RJD.DiagramModel();
   }
@@ -48,7 +48,10 @@ class Demo3 extends React.Component {
   linkNodes(port1, port2) {
     const link = new RJD.LinkModel();
   	link.setSourcePort(port1);
-  	link.setTargetPort(port2);
+    link.setTargetPort(port2);
+    if (this.flag)
+      link.setLabel("SOME LABEL");
+    this.flag = false;
   	return link;
   }
 

@@ -103,6 +103,7 @@ export class LinkModel extends BaseModel {
     this.extras = {};
     this.sourcePort = null;
     this.targetPort = null;
+    this.label = null;
   }
 
   deSerialize(ob) {
@@ -113,6 +114,7 @@ export class LinkModel extends BaseModel {
       p.deSerialize(point);
       return p;
     });
+    this.label = ob.label || null;
   }
 
   serialize() {
@@ -124,7 +126,8 @@ export class LinkModel extends BaseModel {
       target: this.targetPort ? this.targetPort.getParent().id : null,
       targetPort: this.targetPort ? this.targetPort.id : null,
       points: this.points.map(point => point.serialize()),
-      extras: this.extras
+      extras: this.extras,
+      label: this.label || undefined
     };
   }
 
@@ -137,7 +140,13 @@ export class LinkModel extends BaseModel {
       this.targetPort.removeLink(this);
     }
   }
+  getLabel() {
+    return this.label;
+  }
 
+  setLabel(label) {
+    this.label = label;
+  }
   isLastPoint(point) {
     return this.getPointIndex(point) === this.points.length - 1;
   }

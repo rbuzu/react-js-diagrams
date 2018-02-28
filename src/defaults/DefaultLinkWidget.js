@@ -46,6 +46,70 @@ export class DefaultLinkWidget extends React.Component {
     );
   }
 
+  generateLabel() {
+		const canvas = this.props.diagramEngine.canvas;
+		return (
+			<foreignObject className="link-label" width={canvas.offsetWidth} height={canvas.offsetHeight}>
+				<div ref={label => (this.refLabel = label)}>{this.props.link.label}</div>
+			</foreignObject>
+		);
+  }
+  
+  findPathAndRelativePositionToRenderLabel = () => {
+		// an array to hold all path lengths, making sure we hit the DOM only once to fetch this information
+		const lengths = this.refPaths.map(path => path.getTotalLength());
+    console.log(lengths);
+		// calculate the point where we want to display the label
+		let labelPosition = lengths.reduce((previousValue, currentValue) => previousValue + currentValue, 0) / 2;
+
+		// find the path where the label will be rendered and calculate the relative position
+		let pathIndex = 0;
+		while (pathIndex < this.refPaths.length) {
+			if (labelPosition - lengths[pathIndex] < 0) {
+				return {
+					path: this.refPaths[pathIndex],
+					position: labelPosition
+				};
+			}
+
+			// keep searching
+			labelPosition -= lengths[pathIndex];
+			pathIndex++;
+		}
+  };
+  
+  calculateLabelPosition = () => {
+		if (!this.refLabel) {
+			// no label? nothing to do here
+			return;
+		}
+
+		const { path, position } = this.findPathAndRelativePositionToRenderLabel();
+
+		const labelDimensions = {
+			width: this.refLabel.offsetWidth,
+			height: this.refLabel.offsetHeight
+    };
+    
+    const pathCentre = path.getPointAtLength(position);
+    console.log("PATH CENTRe");
+    console.log(pathCentre);
+		const labelCoordinates = {
+			x: pathCentre.x,
+			y: pathCentre.y
+		};
+
+		this.refLabel.setAttribute("style", `transform: translate(${labelCoordinates.x}px, ${labelCoordinates.y}px);`);
+  };
+  
+  componentDidUpdate() {
+		window.requestAnimationFrame(this.calculateLabelPosition);
+	}
+
+	componentDidMount() {
+		window.requestAnimationFrame(this.calculateLabelPosition);
+	}
+
   generateLink(extraProps) {
     const { link, width, color } = this.props;
     const { selected } = this.state;
@@ -54,6 +118,7 @@ export class DefaultLinkWidget extends React.Component {
         className={(selected || link.isSelected()) ? 'selected' : ''}
         strokeWidth={width}
         stroke={color}
+        ref={path => path && this.refPaths.push(path)}
         {...extraProps}
       />
     );
@@ -178,9 +243,13 @@ export class DefaultLinkWidget extends React.Component {
       paths = this.drawAdvancedLine();
     }
 
+    this.refLabel = null;
+    this.refPaths = [];
+    
     return (
       <g>
         {paths}
+        {this.props.link.label && this.generateLabel()}
       </g>
     );
   }
